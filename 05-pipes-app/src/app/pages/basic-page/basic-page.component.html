@@ -57,10 +57,9 @@
 
 <div class="flex flex-row gap-2">
   <h1 class="text-2xl font-bold">
-    Locale Actual:
-    <span class="badge badge-secondary">ES</span>
+    Locale Actual: <span class="badge badge-secondary">{{ currentLocale() | uppercase}}</span>
   </h1>
-  <button class="btn btn-primary">Cambiar a español</button>
-  <button class="btn btn-primary">Change to english</button>
-  <button class="btn btn-primary">Wechseln Sie zu Deutsch</button>
+  <button (click)="changeLocale('es')" class="btn btn-primary">Cambiar a español</button>
+  <button (click)="changeLocale('en')" class="btn btn-primary">Change to english</button>
+  <button (click)="changeLocale('de')" class="btn btn-primary">Wechseln Sie zu Deutsch</button>
 </div>

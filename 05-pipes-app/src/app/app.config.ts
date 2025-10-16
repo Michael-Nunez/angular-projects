@@ -4,6 +4,7 @@ import { routes } from './app.routes';
 import { registerLocaleData } from '@angular/common';
 import localeEsDO from '@angular/common/locales/es-DO';
 import localeGER from '@angular/common/locales/de';
+import { LocaleService } from './services/locale.service';
 
 registerLocaleData(localeEsDO, 'es');
 registerLocaleData(localeGER, 'de');
@@ -14,7 +15,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     {
       provide: LOCALE_ID,
-      useValue: 'es'
+      deps: [LocaleService],
+      useFactory: (localeService: LocaleService) => localeService.getLocale
     }
   ]
 };
