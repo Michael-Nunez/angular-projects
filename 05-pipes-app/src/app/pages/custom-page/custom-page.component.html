@@ -1,1 +1,62 @@
-<p>custom-page works!</p>,
+<section class="mx-5">
+  <h1 class="text-2xl font-bold">Pipes Personalizados</h1>
+  <h3 class="text-xl font-thin">Pipes creados por el desarrollador para solucionar situaciones específicas</h3>
+</section>
+
+<div class="stats shadow">
+  <div class="stat">
+    <div class="stat-title">ToggleCase Pipe</div>
+    <div class="stat-value">{{ name() | toggleCase: upperCase()}}</div>
+    <div class="stat-desc">Valor por defecto: {{ name() }}</div>
+
+    <button (click)="upperCase.set(!upperCase())" class="btn btn-primary mt-2">ToggleCase</button>
+  </div>
+</div>
+
+<div class="divider my-2"></div>
+
+<h1 class="text-2xl font-bold">Filtrando por: {{ searchQuery() }} | Ordenando por: {{ sortBy() }}</h1>
+
+<section class="my-2">
+  <div class="flex gap-2 justify-end w-full">
+    <input
+      type="text"
+      class="input input-bordered w-full max-w-xs mt-2"
+      placeholder="Buscar Héroe"
+      #txtSearch
+      (input)="searchQuery.set(txtSearch.value)"
+    />
+
+    <div class="flex flex-1"></div>
+
+    <button (click)="sortBy.set('name')" class="btn btn-secondary">Por nombre</button>
+    <button (click)="sortBy.set('canFly')" class="btn btn-primary">Por volar</button>
+    <button (click)="sortBy.set('color')" class="btn btn-info">Por color</button>
+    <button (click)="sortBy.set('creator')" class="btn btn-accent">Por creador</button>
+  </div>
+</section>
+
+<section class="overflow-x-auto w-full">
+  <table class="table w-full">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>¿Puede volar?</th>
+        <th>Color</th>
+        <th>Creador</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (hero of heroes() | heroFilter: searchQuery() | heroesSortBy: sortBy(); track hero.id; let index = $index) {
+        <tr>
+          <td>{{ index + 1 }}</td>
+          <td>{{ hero.name }}</td>
+          <td [class.text-success]="hero.canFly" [class.text-error]="!hero.canFly">{{ hero.canFly | canFly}}</td>
+          <td class="text-xs w-44" [style.color]="hero.color | heroTextColor">{{ hero.color | heroColor | titlecase}}</td>
+          <td [class.text-success]="hero.creator === 0" [class.text-secondary]="hero.creator === 1">{{ hero.creator | heroCreator}}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>
