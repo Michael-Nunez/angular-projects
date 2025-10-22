@@ -78,7 +78,7 @@
     <pre>{{ myForm.pristine | json }}</pre>
 
     <span>
-      <b>Touched</b> (Muestra 'True' si algun input del formulario es clickeado.)
+      <b>Touched</b> (Es como el onblur de JavaScript, si se clickea un input del formulario y luego se clickea en otro lado muestra 'True')
     </span>
     <pre>{{ myForm.touched | json }}</pre>
 
@@ -96,5 +96,17 @@
       <b>Producto</b>
     </span>
     <pre>{{ myForm.controls.name.value | json }}</pre>
+
+    <span>
+      <b>Errores del Formulario</b>
+    </span>
+    <pre>{{ myForm.errors | json }}</pre>
+
+    <span>
+      <b>Errores de los inputs</b>
+    </span>
+    <pre>name: {{ myForm.controls.name.errors | json }}</pre>
+    <pre>price: {{ myForm.controls.price.errors | json }}</pre>
+    <pre>inStorage: {{ myForm.controls.inStorage.errors | json }}</pre>
   </div>
 </div>
