@@ -15,8 +15,8 @@
             formControlName="name"
           />
 
-          @if (isValidField('name')) {
-            <span class="form-text text-danger">{{ getFieldErrors('name') }}</span>
+          @if (formUtils.isValidField(myForm, 'name')) {
+            <span class="form-text text-danger">{{ formUtils.getFieldErrors(myForm, 'name') }}</span>
           }
 
         </div>
@@ -33,8 +33,8 @@
             formControlName="price"
           />
 
-          @if (isValidField('price')) {
-            <span class="form-text text-danger">{{ getFieldErrors('price') }}</span>
+          @if (formUtils.isValidField(myForm, 'price')) {
+            <span class="form-text text-danger">{{ formUtils.getFieldErrors(myForm, 'price') }}</span>
           }
 
         </div>
@@ -51,8 +51,8 @@
             formControlName="inStorage"
           />
 
-          @if (isValidField('inStorage')) {
-            <span class="form-text text-danger">{{ getFieldErrors('inStorage') }}</span>
+          @if (formUtils.isValidField(myForm, 'inStorage')) {
+            <span class="form-text text-danger">{{ formUtils.getFieldErrors(myForm, 'inStorage') }}</span>
           }
 
         </div>
