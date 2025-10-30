@@ -1,16 +1,17 @@
 <h1 class="mt-3">Selectores anidados</h1>
 <hr />
 
-<form>
+<form [formGroup]="myForm">
   <!-- Region -->
   <div class="row mb-3">
     <div class="col">
-      <label class="form-label">Continente:</label>
-      <select formControlName="region" class="form-control">
+      <label class="form-label" style="cursor: pointer;">Continente:</label>
+      <select formControlName="region" class="form-control" style="cursor: pointer;">
         <option value="">-- Seleccione Continente --</option>
-        <!-- <option [value]="region">
-          {{ region }}
-        </option> -->
+
+        @for (region of regions; track $index) {
+          <option [value]="region">{{ region }}</option>
+        }
       </select>
     </div>
   </div>
@@ -18,12 +19,13 @@
   <!-- Countries -->
   <div class="row mb-3">
     <div class="col">
-      <label class="form-label">País:</label>
-      <select formControlName="country" class="form-control">
+      <label class="form-label" style="cursor: pointer;">País:</label>
+      <select formControlName="country" class="form-control" style="cursor: pointer;">
         <option value="">-- Seleccione País --</option>
-        <!-- <option [value]="country.cca3">
-          {{ country.name }}
-        </option> -->
+
+        @for (country of countriesByRegion(); track country.cca3) {
+          <option [value]="country.cca3">{{ country.name.common }}</option>
+        }
       </select>
     </div>
   </div>
@@ -31,19 +33,18 @@
   <!-- Countries -->
   <div class="row mb-3">
     <div class="col">
-      <label class="form-label">Fronteras:</label>
-      <select formControlName="border" class="form-control">
+      <label class="form-label" style="cursor: pointer;">Fronteras:</label>
+      <select formControlName="border" class="form-control" style="cursor: pointer;">
         <option value="">-- Seleccione la frontera --</option>
-        <!-- <option [value]="country.cca3">
-          {{ country.name }}
-        </option> -->
+
+        @for (country of countriesByBorders(); track country.cca3) {
+          <option [value]="country.cca3">{{ country.name.common }}</option>
+        }
       </select>
     </div>
   </div>
 </form>
 
 <h3>Formulario</h3>
-<code>
-  <!-- {{ 'myForm.value' | json }} -->
-</code>
-<p>is form valid: {{ 'myForm.valid' }}</p>
+<p>¿Is form valid? <b>{{ myForm.valid }}</b></p>
+<p>Value: <b>{{ myForm.value | json }}</b></p>
