@@ -1,1 +1,12 @@
-<p>fullscreen-map-page works!</p>,
+<div #map></div>
+
+<section id="controls">
+  <h2 class="text-2xl font-bold text-black mb-2">Coordenadas</h2>
+  <pre class="text-sm text-gray-500 font-normal">{{
+    {
+      Latitud: coordinates().lat | number: '1.4-4',
+      Longitud: coordinates().lng | number: '1.4-4',
+    } | json
+  }}
+</pre>
+</section>
