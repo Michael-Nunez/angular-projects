@@ -8,7 +8,13 @@ const baseURL = environment.baseURL;
 })
 
 export class ProductImagePipe implements PipeTransform {
-  transform(value: string | string[]): string {
+  transform(value: null | string | string[]): string {
+    const noImageTemplateRoute = './assets/images/no-image.jpg';
+
+    if (value === null) {
+      return noImageTemplateRoute;
+    }
+
     if (typeof value === 'string') {
       return `${baseURL}/files/product/${value}`;
     }
@@ -16,7 +22,7 @@ export class ProductImagePipe implements PipeTransform {
     const image = value.at(0);
 
     if (!image) {
-      return './assets/images/no-image.jpg';
+      return noImageTemplateRoute;
     }
 
     return `${baseURL}/files/product/${image}`;
