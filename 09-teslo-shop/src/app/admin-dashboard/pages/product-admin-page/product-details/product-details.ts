@@ -1,6 +1,6 @@
 import { ProductsCarousel } from '@/products/components/products-carousel/products-carousel';
 import { Product } from '@/products/interfaces/product.interface';
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormUtils } from '@utils/form-utils';
 import { FormErrorLabel } from "@shared/components/form-error-label/form-error-label";
@@ -19,6 +19,14 @@ export class ProductDetails implements OnInit {
   router = inject(Router);
   productsService = inject(ProductsService);
   productWasSaved = signal(false);
+
+  imageFileList: FileList | undefined = undefined;
+  tempImages = signal<string[]>([]);
+  imagesToCarousel = computed(() => {
+    const currentProductImages = [...this.product().images, ...this.tempImages()];
+
+    return currentProductImages;
+  });
 
   sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
@@ -70,12 +78,12 @@ export class ProductDetails implements OnInit {
     }
 
     if (this.product().id === 'new') {
-      const newProduct = await firstValueFrom(this.productsService.createProduct(productLike));
+      const newProduct = await firstValueFrom(this.productsService.createProduct(productLike, this.imageFileList));
 
       console.log('Producto creado');
       this.router.navigate(['/admin/products', newProduct.id]);
     } else {
-      await firstValueFrom(this.productsService.updateProduct(this.product().id, productLike));
+      await firstValueFrom(this.productsService.updateProduct(this.product().id, productLike, this.imageFileList));
 
       console.log('Producto actualizado');
     }
@@ -85,5 +93,16 @@ export class ProductDetails implements OnInit {
     setTimeout(() => {
       this.productWasSaved.set(false);
     }, 2_000);
+  }
+
+  onFilesChange(event: Event) {
+    const fileList = (event.target as HTMLInputElement).files;
+
+    this.imageFileList = fileList ?? undefined;
+
+    const imagesURLs = Array.from(fileList ?? [])
+      .map((file) => URL.createObjectURL(file));
+
+    this.tempImages.set(imagesURLs);
   }
 }

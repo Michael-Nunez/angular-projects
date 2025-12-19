@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Gender, Product, ProductsResponse } from '../interfaces/product.interface';
-import { Observable, of, tap } from 'rxjs';
+import { Observable, of, tap, map, forkJoin, switchMap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '@/auth/interfaces/user.interface';
 
@@ -82,18 +82,38 @@ export class ProductsService {
       );
   }
 
-  createProduct(productLike: Partial<Product>): Observable<Product> {
-    return this.httpClient.post<Product>(`${baseURL}/products`, productLike)
+  createProduct(productLike: Partial<Product>, images?: FileList): Observable<Product> {
+    const currentImages = productLike.images ?? [];
+
+    //* Observables encadenados: map, switchMap y tap
+    return this.uploadImages(images)
       .pipe(
+        map((imagesNames) => ({
+          ...productLike,
+          images: [...currentImages, ...imagesNames]
+        })),
+        switchMap((updatedProduct) =>
+          this.httpClient.post<Product>(`${baseURL}/products`, updatedProduct)
+        ),
         tap((product) => this.updateProductCache(product))
       );
   }
 
-  updateProduct(id: string, productLike: Partial<Product>): Observable<Product> {
-    return this.httpClient.patch<Product>(`${baseURL}/products/${id}`, productLike)
-    .pipe(
-      tap((product) => this.updateProductCache(product))
-    );
+  updateProduct(id: string, productLike: Partial<Product>, images?: FileList): Observable<Product> {
+    const currentImages = productLike.images ?? [];
+
+    //* Observables encadenados: map, switchMap y tap
+    return this.uploadImages(images)
+      .pipe(
+        map((imagesNames) => ({
+          ...productLike,
+          images: [...currentImages, ...imagesNames]
+        })),
+        switchMap((updatedProduct) =>
+          this.httpClient.patch<Product>(`${baseURL}/products/${id}`, updatedProduct)
+        ),
+        tap((product) => this.updateProductCache(product))
+      );
   }
 
   updateProductCache(product: Product) {
@@ -108,5 +128,27 @@ export class ProductsService {
     });
 
     console.log('Cache actualizado');
+  }
+
+  uploadImage(imageFile: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', imageFile);
+
+    return this.httpClient.post<{ fileName: string }>(`${baseURL}/files/product`, formData)
+      .pipe(
+        map((response) => response.fileName)
+      );
+  }
+
+  uploadImages(images?: FileList): Observable<string[]> {
+    if (!images) return of([]);
+
+    const uploadObservables = Array.from(images)
+      .map((imageFile) => this.uploadImage(imageFile));
+
+    //? forkJoin -> Recibe un arreglo de observables y se ejecuta de manera exitosa si todos son procesados correctamente,
+    //? de lo contrario lanza una excepción.
+    //? Es un homólogo del await Promise.all();
+    return forkJoin(uploadObservables);
   }
 }
